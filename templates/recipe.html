@@ -1,0 +1,161 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<style>
+    recipe {
+    margin: 25px;
+    }
+    input {
+    margin: 5px;
+    }
+    img {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+    }
+    .like-message {
+    margin: 5px;
+    text-align: center; 
+    vertical-align: middle;
+    }
+    .btn-info{
+    margin: 5px;
+    }
+    .search-logo {
+    margin: 10px;
+    }
+    .title-centered {
+    text-align: center;
+    }
+    .carousel-control-prev {
+    margin-left: -200px;
+    }
+    .carousel-control-next {
+    margin-right: -200px;
+    }
+    .carousel-control-prev-icon,
+    .carousel-control-next-icon {
+    height: 100px;
+    width: 100px;
+    background-size: 100%, 100%;
+    border-radius: 50%;
+    background-image: none;
+    }
+    .carousel-control-next-icon:after
+    {
+    content: '>';
+    font-size: 55px;
+    color: black;
+    }
+    .carousel-control-prev-icon:after {
+    content: '<';
+    font-size: 55px;
+    color: black;
+    }
+</style>
+
+<h1 class="title-centered"><img class="search-logo" src="static/img/chef.png" width="70" height="70">{% block title %}Recipe Search{% endblock %}</h1>
+<form class="title-centered" action="/getRecipe" method="GET">
+    <input class="form-control" type="text" id="query" name="query" value="{{ingredient}}">
+    <br>
+    <input class="btn btn-success p-2" type="submit" value="Search">
+</form>
+<br>
+{% if ingredient != 'Enter ingredient' %}
+<div id="carouselExampleControls" class="carousel carousel-dark slide" data-ride="carousel">
+    <div class="carousel-inner">
+        {% for recipe in recipes %}
+            {% if loop.index0 == 0 %}
+                <div class="carousel-item active">
+                    <div class="row">
+                    <img src="{{recipe['recipe']['image']}}" class="d-block w-20 rounded" alt="{{recipe['recipe']['label']}} width=">
+                    <recipe class="content">
+                    <h5>{{recipe['recipe']['label']}}</h5>
+                    {% for ingredient in recipe['recipe']['ingredientLines'] %}
+                    <li>{{ingredient}}</li>
+                    {% endfor %}
+                    <br>
+                    <table class="table table-sm">
+                        <thead>
+                          <tr>
+                            <th scope="col">Calories</th>
+                            <th scope="col">Fat</th>
+                            <th scope="col">Carbohydrates</th>
+                            <th scope="col">Protein</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th scope="row">{{recipe['recipe']['calories']|round|int}} kcal</th>
+                            <td>{{recipe['recipe']['totalNutrients']['FAT']['quantity']|round|int}} g</td>
+                            <td>{{recipe['recipe']['totalNutrients']['CHOCDF']['quantity']|round|int}} g</td>
+                            <td>{{recipe['recipe']['totalNutrients']['PROCNT']['quantity']|round|int}} g</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <div class="row">
+                      <a href="{{recipe['recipe']['url']}}" class="btn btn-info" role="button">Go to recipe!</a>
+                      <form action="/increaseTastyCounter" method="GET">
+                        <input type="hidden" name="query" value="{{ingredient}}">
+                        <input type="hidden" name="label" value="{{recipe['recipe']['label']}}">
+                        <input class="btn btn-outline-warning" type="submit" value="Tasty!">
+                      </form>
+                      <h5 class="like-message">{{recipe['recipe']['tastyCount']}} people think this recipe is tasty!</h5>
+                    </div>
+                    </recipe>
+                    </div>
+                </div>
+            {% else %}
+                <div class="carousel-item">
+                    <div class="row">
+                    <img src="{{recipe['recipe']['image']}}" class="d-block w-20 rounded" alt="{{recipe['recipe']['label']}}">
+                    <recipe class="content">
+                    <h5>{{recipe['recipe']['label']}}</h5>
+                    {% for ingredient in recipe['recipe']['ingredientLines'] %}
+                    <li>{{ingredient}}</li>
+                    {% endfor %}
+                    <br>
+                    <table class="table table-sm">
+                        <thead>
+                          <tr>
+                            <th scope="col">Calories</th>
+                            <th scope="col">Fat</th>
+                            <th scope="col">Carbohydrates</th>
+                            <th scope="col">Protein</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                            <th scope="row">{{recipe['recipe']['calories']|round|int}} kcal</th>
+                            <td>{{recipe['recipe']['totalNutrients']['FAT']['quantity']|round|int}} g</td>
+                            <td>{{recipe['recipe']['totalNutrients']['CHOCDF']['quantity']|round|int}} g</td>
+                            <td>{{recipe['recipe']['totalNutrients']['PROCNT']['quantity']|round|int}} g</td>
+                          </tr>
+                        </tbody>
+                      </table>
+                      <div class="row">
+                        <a href="{{recipe['recipe']['url']}}" class="btn btn-info" role="button">Go to recipe!</a>
+                        <form action="/increaseTastyCounter" method="GET">
+                          <input type="hidden" name="query" value="{{ingredient}}">
+                          <input type="hidden" name="label" value="{{recipe['recipe']['label']}}">
+                          <input class="btn btn-outline-warning" type="submit" value="Tasty!">
+                        </form>
+                        <h5 class="like-message">{{recipe['recipe']['tastyCount']}} people think this recipe is tasty!</h5>
+                      </div>
+                    </recipe>
+                    </div>
+                </div>
+            {% endif %}
+        {% endfor %}
+    </div>
+    <a class="carousel-control-prev" href="#carouselExampleControls" role="button" data-slide="prev">
+        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+        <span class="sr-only">Previous</span>
+    </a>
+    <a class="carousel-control-next" href="#carouselExampleControls" role="button" data-slide="next">
+        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+        <span class="sr-only">Next</span>
+    </a>
+</div>
+{% endif %}
+{% endblock %}

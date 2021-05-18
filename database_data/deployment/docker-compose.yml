@@ -1,0 +1,16 @@
+version: "2"
+services:
+  database:
+    image: mysql:8.0
+    build:
+        context: ../
+        dockerfile: deployment/Dockerfile
+    ports:
+        - "3306:3306"
+    environment:
+        # Change usernames, passwords and database name for custom deployment 
+        MYSQL_ROOT_USER: rootusername
+        MYSQL_ROOT_PASSWORD: rootpassword
+        MYSQL_DATABASE: db
+        MYSQL_USER: databaseuser
+        MYSQL_PASSWORD: databasepassword
